@@ -32,11 +32,12 @@ uintptr_t GetModuleBaseAddress(DWORD dwProcID, TCHAR *szModuleName)
 int main() {
 	//playerbase *currently* is
 	//"client.dll"+0x00AA9AB4
-
 	DWORD playerBase;
 	DWORD playerBaseOffset = 0x00AA9AB4;
 	DWORD crosshairId;
 	DWORD crosshairIdOffset = 0xB2A4;
+	DWORD teamNum;
+	DWORD teamNumOffset = 0xF0;
 
 
 	HWND hwnd = FindWindowA(NULL, "Counter-Strike: Global Offensive");
@@ -62,15 +63,18 @@ int main() {
 		ReadProcessMemory(handle, LPVOID(GetModuleBaseAddress(procID, (TCHAR*)"client.dll") + playerBaseOffset),&playerBase,4,NULL);
 
 		crosshairId = playerBase + crosshairIdOffset;
+		teamNum = playerBase + teamNumOffset;
 
 
 		cout << "PLAYER BASE: " << (LPVOID)playerBase << endl;
 		cout << "CROSSHAIRID: " << (LPVOID)crosshairId << endl;
+		cout << "TEAMNUMBER : " << (LPVOID)teamNum << endl;
 
 		system("pause");
 
 		bool active = false;
-		int read;
+		int read_crosshairId;
+		int read_teamNum;
 
 		while (true) {
 
@@ -86,12 +90,14 @@ int main() {
 			ReadProcessMemory(handle, LPVOID(GetModuleBaseAddress(procID, (TCHAR*)"client.dll") + playerBaseOffset), &playerBase, 4, NULL);
 
 			crosshairId = playerBase + crosshairIdOffset;
+			teamNum = playerBase + teamNumOffset;
 
-			ReadProcessMemory(handle, LPVOID(crosshairId), &read, 4, NULL);
+			ReadProcessMemory(handle, LPVOID(crosshairId), &read_crosshairId, 4, NULL);
+			ReadProcessMemory(handle, LPVOID(teamNum), &read_teamNum, 4, NULL);
 
 
 			if (active) {
-				if (read != 0) {
+				if (read_crosshairId != 0) {
 					INPUT ip;
 					ip.type = INPUT_KEYBOARD;
 					ip.ki.time = 0;
@@ -108,7 +114,9 @@ int main() {
 			}
 
 			Sleep(1);
-			cout << read << endl;
+			cout << "CURRENTLY AIMING AT:" << read_crosshairId << endl;
+			cout << "MY TEAM            :" << read_teamNum;
+			system("cls");
 		}
 
 
