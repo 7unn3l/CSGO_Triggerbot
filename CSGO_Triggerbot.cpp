@@ -97,7 +97,7 @@ int main() {
 
 
 			if (active) {
-				if (read_crosshairId != 0) {
+				if (read_crosshairId > 0 && read_crosshairId < 32) {
 					INPUT ip;
 					ip.type = INPUT_KEYBOARD;
 					ip.ki.time = 0;
