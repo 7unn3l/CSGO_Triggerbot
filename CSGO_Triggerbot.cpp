@@ -86,12 +86,6 @@ int main() {
 
 			}
 
-
-			ReadProcessMemory(handle, LPVOID(GetModuleBaseAddress(procID, (TCHAR*)"client.dll") + playerBaseOffset), &playerBase, 4, NULL);
-
-			crosshairId = playerBase + crosshairIdOffset;
-			teamNum = playerBase + teamNumOffset;
-
 			ReadProcessMemory(handle, LPVOID(crosshairId), &read_crosshairId, 4, NULL);
 			ReadProcessMemory(handle, LPVOID(teamNum), &read_teamNum, 4, NULL);
 
